@@ -48,18 +48,18 @@ def folder_selection():
             # the lambda function help to get the button id and send to play_song function
             customtkinter.CTkButton(songs_area, hover_color='#192879',
                                                   text=song_names[i][:-4], width=200, fg_color='transparent',
-                                                  anchor='w', command=lambda e=song_names[i]: play_song(e)).pack(padx=1, pady=1)
+                                                  anchor='w', command=lambda id_button=song_names[i]: play_song(id_button)).pack(padx=1, pady=1)
     else:
         for widgets in songs_area.winfo_children():
             widgets.destroy()
         customtkinter.CTkLabel(songs_area, text="No folder found!", text_color="red", font=font_lable1).pack(padx=2, pady=2)
 
 
-def play_song(e):
-    # with this function, play the song. From global variable 'song_link' I get the song link and with 'e' I get the button I pressed
+def play_song(id_button):
+    # with this function, play the song. From global variable 'song_link' I get the song link and with 'id_button' I get the button I pressed
     # using pygame, the program can play any mp3 files
     local_song_link = song_link
-    playing_song = local_song_link + "/" + e
+    playing_song = local_song_link + "/" + id_button
     pygame.mixer.init(frequency=50000)
     pygame.mixer.music.load(playing_song)
     pygame.mixer.music.play()
