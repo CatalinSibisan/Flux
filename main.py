@@ -1,5 +1,7 @@
 import customtkinter
 import os
+import pygame.mixer
+
 # this app is a mp3 player app
 # it's not done, yet
 
@@ -9,10 +11,11 @@ app = customtkinter.CTk()
 app.geometry("720x480")
 app.title("Flux")
 app.config(bg="#111B36")
-app.resizable(None, None)
+app.resizable(False, False)
 
 # Important variables
-text_pb = "►"
+text_play = customtkinter.StringVar(value="►")
+text_pause = customtkinter.StringVar(value="| |")
 lable_text = "Songs"
 
 
@@ -27,23 +30,53 @@ font_lable1 = customtkinter.CTkFont(family='Impact', size=15)
 def folder_selection():
     # here I make the link input area, for the folder with songs
     input_link = customtkinter.CTkInputDialog(text="Put the folder location: ", title="Select folder")
+    global song_link
     song_link = input_link.get_input()
     is_folder = os.path.exists(song_link)
 
     # this condition runs if the folder exist
     if is_folder:
+        lable_title = os.path.split(song_link)
+        songs_area.configure(label_text=lable_title[1])
+        songs_area.update()
         # with this for loop I delete all the items in the songs frame
         for widgets in songs_area.winfo_children():
             widgets.destroy()
         song_names = os.listdir(song_link)
         # show all the songs in the list
         for i in range(len(song_names)):
+            # the lambda function help to get the button id and send to play_song function
             customtkinter.CTkButton(songs_area, hover_color='#192879',
-                                    text=song_names[i][:-4],
-                                    width=200, fg_color='transparent', anchor='w').pack(padx=2, pady=2)
+                                                  text=song_names[i][:-4], width=200, fg_color='transparent',
+                                                  anchor='w', command=lambda e=song_names[i]: play_song(e)).pack(padx=1, pady=1)
     else:
-        print("NO FOLDER FOUND")
+        for widgets in songs_area.winfo_children():
+            widgets.destroy()
         customtkinter.CTkLabel(songs_area, text="No folder found!", text_color="red", font=font_lable1).pack(padx=2, pady=2)
+
+
+def play_song(e):
+    # with this function, play the song. From global variable 'song_link' I get the song link and with 'e' I get the button I pressed
+    # using pygame, the program can play any mp3 files
+    local_song_link = song_link
+    playing_song = local_song_link + "/" + e
+    pygame.mixer.init(frequency=50000)
+    pygame.mixer.music.load(playing_song)
+    pygame.mixer.music.play()
+    play_button.configure(textvariable=text_pause, command=pause_song)
+    play_button.update()
+
+
+def pause_song():
+    pygame.mixer.music.pause()
+    play_button.configure(textvariable=text_play, command=unpause_song)
+    play_button.update()
+
+
+def unpause_song():
+    pygame.mixer.music.unpause()
+    play_button.configure(textvariable=text_pause, command=pause_song)
+    play_button.update()
 
 
 # frame for song list
@@ -78,8 +111,8 @@ song_play_time.place(x=20, y=1)
 
 # Start/pause button
 play_button = customtkinter.CTkButton(buttons_area, font=font_PB, hover_color='#192879',
-                                      text=text_pb, width=50, height=50, fg_color='#1F3291',
-                                        corner_radius=100)
+                                      textvariable=text_play, width=50, height=50, fg_color='#1F3291',
+                                        corner_radius=100, command=pause_song)
 play_button.place(x=220, y=27)
 
 # Go to next song
