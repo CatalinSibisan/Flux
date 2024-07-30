@@ -1,6 +1,7 @@
 import customtkinter
 import os
 import pygame.mixer
+from tkinter import filedialog
 
 # this app is a mp3 player app
 # it's not done, yet
@@ -29,9 +30,8 @@ font_lable1 = customtkinter.CTkFont(family='Impact', size=15)
 # functions
 def folder_selection():
     # here I make the link input area, for the folder with songs
-    input_link = customtkinter.CTkInputDialog(text="Put the folder location: ", title="Select folder")
     global song_link
-    song_link = input_link.get_input()
+    song_link = filedialog.askdirectory()
     is_folder = os.path.exists(song_link)
 
     # this condition runs if the folder exist
@@ -63,6 +63,7 @@ def play_song(id_button):
     pygame.mixer.init(frequency=50000)
     pygame.mixer.music.load(playing_song)
     pygame.mixer.music.play()
+    pygame.mixer_music.queue(playing_song)
     play_button.configure(textvariable=text_pause, command=pause_song)
     play_button.update()
 
