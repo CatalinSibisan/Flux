@@ -2,6 +2,8 @@ import customtkinter
 import os
 import pygame.mixer
 from tkinter import filedialog
+from mutagen.mp3 import MP3
+from PIL import Image
 
 # this app is a mp3 player app
 # it's not done, yet
@@ -18,6 +20,8 @@ app.resizable(False, False)
 text_play = customtkinter.StringVar(value="►")
 text_pause = customtkinter.StringVar(value="| |")
 lable_text = "Songs"
+default_image = customtkinter.CTkImage(size=(510, 360), light_image=Image.open("defaultSongPhoto.png"),
+                                       dark_image=Image.open("defaultSongPhoto.png"))
 
 
 # fonts area
@@ -63,9 +67,16 @@ def play_song(id_button):
     pygame.mixer.init(frequency=50000)
     pygame.mixer.music.load(playing_song)
     pygame.mixer.music.play()
-    pygame.mixer_music.queue(playing_song)
     play_button.configure(textvariable=text_pause, command=pause_song)
     play_button.update()
+    progressBar.configure(state='normal')
+
+    # show how long is the song
+    audio = MP3(playing_song)
+    length = audio.info.length
+    minutes = str(int(length / 60)) + ":" + str(int(length % 60))
+    song_duration.configure(text=minutes)
+    song_duration.update()
 
 
 def pause_song():
@@ -78,6 +89,10 @@ def unpause_song():
     pygame.mixer.music.unpause()
     play_button.configure(textvariable=text_pause, command=pause_song)
     play_button.update()
+
+
+def progressbar():
+    pass
 
 
 # frame for song list
@@ -129,6 +144,9 @@ preview_button.place(x=160, y=25)
 # Image area
 image_area = customtkinter.CTkFrame(app, width=510, height=360, bg_color="#111B36", fg_color='#1F3291', corner_radius=20)
 image_area.pack(side=customtkinter.RIGHT, padx=10, pady=2)
+
+image_default = customtkinter.CTkLabel(image_area, image=default_image, text="")
+image_default.pack()
 
 
 app.mainloop()
