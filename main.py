@@ -4,9 +4,7 @@ import pygame.mixer
 from tkinter import filedialog
 from mutagen.mp3 import MP3
 from PIL import Image
-
 # this app is a mp3 player app
-# it's not done, yet
 
 
 # system settings
@@ -22,6 +20,12 @@ text_pause = customtkinter.StringVar(value="| |")
 lable_text = "Songs"
 default_image = customtkinter.CTkImage(size=(510, 360), light_image=Image.open("defaultSongPhoto.png"),
                                        dark_image=Image.open("defaultSongPhoto.png"))
+repeat_image = customtkinter.CTkImage(size=(24, 24), light_image=Image.open("repeat.png"),
+                                       dark_image=Image.open("repeat.png"))
+add_folder_image = customtkinter.CTkImage(size=(24, 24), light_image=Image.open("add.png"),
+                                       dark_image=Image.open("add.png"))
+
+
 
 
 # fonts area
@@ -70,6 +74,7 @@ def play_song(id_button):
     play_button.configure(textvariable=text_pause, command=pause_song)
     play_button.update()
     progressBar.configure(state='normal')
+    repeat_button.configure(command=repeat, hover_color="#192879", fg_color='#1F3291')
 
     # show how long is the song
     audio = MP3(playing_song)
@@ -95,6 +100,15 @@ def progressbar():
     pass
 
 
+def repeat():
+    pygame.mixer.music.play(loops=-1)
+    repeat_button.configure(command=unrepeat, hover_color="#1F3291", fg_color='#192879')
+
+
+def unrepeat():
+    repeat_button.configure(command=repeat, hover_color="#192879", fg_color='#1F3291')
+    pygame.mixer.music.play(loops=0)
+
 # frame for song list
 songs_area = customtkinter.CTkScrollableFrame(app, width=200, height=480, fg_color='#1F3291', label_text=lable_text, label_fg_color='#08186C',
                                                label_font=font_lable, scrollbar_button_color='#08186C',
@@ -114,7 +128,7 @@ progressBar.set(0)
 progressBar.place(x=55, y=7)
 
 # select the folder
-folder_select = customtkinter.CTkButton(buttons_area, width=30, height=30, text="☼", hover_color='#192879', fg_color='#1F3291', font=font_sett, command=folder_selection)
+folder_select = customtkinter.CTkButton(buttons_area, width=24, height=24, text="",image=add_folder_image, hover_color='#192879', fg_color='#1F3291', font=font_sett, command=folder_selection)
 folder_select.place(x=30, y=50)
 
 # song duration
@@ -129,18 +143,11 @@ song_play_time.place(x=20, y=1)
 play_button = customtkinter.CTkButton(buttons_area, font=font_PB, hover_color='#192879',
                                       textvariable=text_play, width=50, height=50, fg_color='#1F3291',
                                         corner_radius=100, command=pause_song)
-play_button.place(x=220, y=27)
+play_button.place(x=150, y=27)
 
-# Go to next song
-next_button = customtkinter.CTkButton(buttons_area, font=font_PB, text="►", width=10, hover=False,
-                                      text_color='#1F3291', fg_color='transparent')
-next_button.place(x=310, y=25)
-
-# Go to preview song
-preview_button = customtkinter.CTkButton(buttons_area, font=font_PB, text="◄", width=10, hover=False,
-                                         text_color='#1F3291', fg_color='transparent')
-preview_button.place(x=160, y=25)
-
+# repeat the song button
+repeat_button = customtkinter.CTkButton(buttons_area, image=repeat_image, text="", hover_color="#192879", fg_color='#1F3291', width=50, height=50, corner_radius=100, command=repeat)
+repeat_button.place(x=270, y=30)
 # Image area
 image_area = customtkinter.CTkFrame(app, width=510, height=360, bg_color="#111B36", fg_color='#1F3291', corner_radius=20)
 image_area.pack(side=customtkinter.RIGHT, padx=10, pady=2)
