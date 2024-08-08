@@ -47,6 +47,7 @@ def folder_selection():
         # with this for loop I delete all the items in the songs frame
         for widgets in songs_area.winfo_children():
             widgets.destroy()
+        global song_names
         song_names = os.listdir(song_link)
         # make sure, the folder have mp3 files only
         for files in song_names:
@@ -68,6 +69,8 @@ def folder_selection():
 def play_song(id_button):
     # with this function, play the song. From global variable 'song_link' I get the song link and with 'id_button' I get the button I pressed
     # using pygame, the program can play any mp3 files
+    global test
+    test = id_button
     local_song_link = song_link
     playing_song = local_song_link + "/" + id_button
     pygame.mixer.init(frequency=50000)
@@ -77,7 +80,9 @@ def play_song(id_button):
     play_button.update()
     progressBar.configure(state='normal')
     repeat_button.configure(command=repeat, hover_color="#192879", fg_color='#1F3291')
-    test()
+    image_default.configure(text=id_button[:-4])
+
+    
 
     # show how long is the song
     audio = MP3(playing_song)
@@ -91,10 +96,8 @@ def play_song(id_button):
     transform = int(length)
     progressBar.configure(to=transform)
     progressBar.set(0)
-
-def continue_playing():
-    pass
-
+    song_play_time.configure(text="00:00")
+    testing()
 
 
 def pause_song():
@@ -110,18 +113,19 @@ def unpause_song():
 
 
 def progressbar(song_pos):
-    pygame.mixer.music.set_pos(song_pos)
-    print("ce plm: ", int(pygame.mixer.music.get_pos() / 1000))
+    pygame.mixer.music.play(start=song_pos)
     progressBar.set(int(song_pos))
     converted_time = time.strftime('%M:%S', time.gmtime(song_pos))
     song_play_time.configure(text=converted_time)
     song_play_time.update()
-    progressBar.after(1000, test)
+
+    global song_position1
+    song_position1 = int(pygame.mixer.music.get_pos())
+    
     
 
-def test():
-    current_time = pygame.mixer.music.get_pos() / 1000
-    print("________>", int(current_time), "------->", int(pygame.mixer.music.get_pos() / 1000))
+def testing():
+    current_time = song_position1 / 1000
     converted_time = time.strftime('%M:%S', time.gmtime(current_time))
     song_play_time.configure(text=converted_time)
     song_play_time.update()
@@ -196,7 +200,7 @@ repeat_button.place(x=250, y=40)
 image_area = customtkinter.CTkFrame(app, width=510, height=360, bg_color="#111B36", fg_color='#1F3291', corner_radius=20)
 image_area.pack(side=customtkinter.RIGHT, padx=10, pady=2)
 
-image_default = customtkinter.CTkLabel(image_area, image=default_image, text="")
+image_default = customtkinter.CTkLabel(image_area, image=default_image, text="", font=font_lable)
 image_default.pack()
 
 
