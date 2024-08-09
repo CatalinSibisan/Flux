@@ -78,11 +78,9 @@ def play_song(id_button):
     pygame.mixer.music.play()
     play_button.configure(textvariable=text_pause, command=pause_song)
     play_button.update()
-    progressBar.configure(state='normal')
     repeat_button.configure(command=repeat, hover_color="#192879", fg_color='#1F3291')
     image_default.configure(text=id_button[:-4])
-
-    
+    testing()
 
     # show how long is the song
     audio = MP3(playing_song)
@@ -97,7 +95,6 @@ def play_song(id_button):
     progressBar.configure(to=transform)
     progressBar.set(0)
     song_play_time.configure(text="00:00")
-    testing()
 
 
 def pause_song():
@@ -110,27 +107,19 @@ def unpause_song():
     pygame.mixer.music.unpause()
     play_button.configure(textvariable=text_pause, command=pause_song)
     play_button.update()
-
-
-def progressbar(song_pos):
-    pygame.mixer.music.play(start=song_pos)
-    progressBar.set(int(song_pos))
-    converted_time = time.strftime('%M:%S', time.gmtime(song_pos))
-    song_play_time.configure(text=converted_time)
-    song_play_time.update()
-
-    global song_position1
-    song_position1 = int(pygame.mixer.music.get_pos())
-    
     
 
 def testing():
-    current_time = song_position1 / 1000
+    global current_time
+    current_time = int(pygame.mixer.music.get_pos()) / 1000
     converted_time = time.strftime('%M:%S', time.gmtime(current_time))
     song_play_time.configure(text=converted_time)
     song_play_time.update()
-    progressBar.after(1000, test)
+    progressBar.after(1000, testing)
     progressBar.set(current_time)
+
+    if not pygame.mixer.music.get_busy():
+        play_button.configure(textvariable = text_play, font=font_PB)
 
 
 def repeat():
@@ -163,7 +152,7 @@ buttons_area.pack(side=customtkinter.BOTTOM)
 progressBar = customtkinter.CTkSlider(buttons_area, width=400, from_=0, to=100,
                                       border_width=1, border_color="black", fg_color="#111B36",
                                       progress_color="#1F3291", button_color="#08186C", button_hover_color="#192879",
-                                      state="disable", command=progressbar)
+                                      state="disable")
 progressBar.set(0)
 progressBar.place(x=55, y=7)
 
