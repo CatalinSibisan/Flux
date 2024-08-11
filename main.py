@@ -80,12 +80,13 @@ def play_song(id_button):
     play_button.update()
     repeat_button.configure(command=repeat, hover_color="#192879", fg_color='#1F3291')
     image_default.configure(text=id_button[:-4])
-    testing()
+    progress_bar_active()
 
     # show how long is the song
     audio = MP3(playing_song)
     global length
     length = audio.info.length
+    global minutes
     minutes = time.strftime('%M:%S', time.gmtime(length))
     song_duration.configure(text=minutes)
     song_duration.update()
@@ -97,41 +98,46 @@ def play_song(id_button):
     song_play_time.configure(text="00:00")
 
 
+# pause the song
 def pause_song():
     pygame.mixer.music.pause()
     play_button.configure(textvariable=text_play, command=unpause_song)
     play_button.update()
 
 
+# unpause the song
 def unpause_song():
     pygame.mixer.music.unpause()
     play_button.configure(textvariable=text_pause, command=pause_song)
     play_button.update()
     
 
-def testing():
-    global current_time
-    current_time = int(pygame.mixer.music.get_pos()) / 1000
-    converted_time = time.strftime('%M:%S', time.gmtime(current_time))
-    song_play_time.configure(text=converted_time)
-    song_play_time.update()
-    progressBar.after(1000, testing)
-    progressBar.set(current_time)
+def progress_bar_active():
+    if pygame.mixer.music.get_busy():
+        global current_time
+        current_time = int(pygame.mixer.music.get_pos()) / 1000
+        converted_time = time.strftime('%M:%S', time.gmtime(current_time))
+        song_play_time.configure(text=converted_time)
+        song_play_time.update()
+        progressBar.after(1000, progress_bar_active)
+        progressBar.set(current_time)
 
-    if not pygame.mixer.music.get_busy():
+    else:
         play_button.configure(textvariable = text_play, font=font_PB)
+        song_play_time.configure(text=minutes)
+        song_play_time.update()
 
-
+# activate the song to repeat
 def repeat():
     pygame.mixer.music.play(loops=-1)
     repeat_button.configure(command=unrepeat, hover_color="#1F3291", fg_color='#192879')
 
-
+# dezactivate the song to repeat
 def unrepeat():
     repeat_button.configure(command=repeat, hover_color="#192879", fg_color='#1F3291')
     pygame.mixer.music.play(loops=0)
 
-
+# set the volume of the song
 def volume(value):
     volume_value = int(value)
     volume_text.configure(text=volume_value)
@@ -185,6 +191,7 @@ play_button.place(x=150, y=27)
 # repeat the song button
 repeat_button = customtkinter.CTkButton(buttons_area, image=repeat_image, text="", hover_color="#192879", fg_color='#1F3291', width=30, height=30, corner_radius=100, command=repeat)
 repeat_button.place(x=250, y=40)
+
 # Image area
 image_area = customtkinter.CTkFrame(app, width=510, height=360, bg_color="#111B36", fg_color='#1F3291', corner_radius=20)
 image_area.pack(side=customtkinter.RIGHT, padx=10, pady=2)
