@@ -155,7 +155,7 @@ buttons_area = customtkinter.CTkFrame(app, width=520, height=100, fg_color='#111
 buttons_area.pack(side=customtkinter.BOTTOM)
 
 # song duration bar/text
-progressBar = customtkinter.CTkSlider(buttons_area, width=400, from_=0, to=100,
+progressBar = customtkinter.CTkSlider(buttons_area, width=390, from_=0, to=100,
                                       border_width=1, border_color="black", fg_color="#111B36",
                                       progress_color="#1F3291", button_color="#08186C", button_hover_color="#192879",
                                       state="disable")
@@ -168,7 +168,7 @@ folder_select.place(x=30, y=50)
 
 # song duration
 song_duration = customtkinter.CTkLabel(buttons_area, text="00:00", font=font_lable1)
-song_duration.place(x=460, y=1)
+song_duration.place(x=450, y=1)
 
 # song time
 song_play_time = customtkinter.CTkLabel(buttons_area, text="00:00", font=font_lable1)
