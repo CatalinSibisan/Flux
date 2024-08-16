@@ -114,7 +114,6 @@ def unpause_song():
 
 def progress_bar_active():
     if pygame.mixer.music.get_busy():
-        global current_time
         current_time = int(pygame.mixer.music.get_pos()) / 1000
         converted_time = time.strftime('%M:%S', time.gmtime(current_time))
         song_play_time.configure(text=converted_time)
