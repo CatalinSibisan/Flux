@@ -3,7 +3,7 @@
 Flux is a Python-based application that allows you to listen to and download MP3 files.
 The app uses the **Tkinter** and **CustomTkinter** libraries for the graphical interface, and **pygame**, **time**, and **os** libraries for audio playback and file management.
 With Flux, you can select a folder to organize your music, play your favorite tracks, pause, repeat, and control the volume.
-You can see the design of the app here: https://www.figma.com/design/WXiSfvZ6xGBjiBGBOk0vIj/Untitled?t=Po0ybtD0UmC2rCxV-1
+You can see the design of the app here: https://www.figma.com/design/WXiSfvZ6xGBjiBGBOk0vIj/FluxApp?node-id=0-1&t=bEETEGkMii7bXgAP-1
 
 ---
 
